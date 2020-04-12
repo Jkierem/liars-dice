@@ -1,4 +1,4 @@
-import { equals, split, __, curryN, type, when, includes } from "ramda";
+import { equals, split, __, curryN, type, when, includes, pathOr } from "ramda";
 import { compose } from "redux";
 
 export const isFunction = compose( equals("Function"), type );
@@ -19,6 +19,8 @@ export const debounce = (fn,time) => {
 
 export const dotPath = curryN(2,(path,obj) => compose( path(__,obj), split("."))(path))
 
+export const dotPathOr = curryN(3,(or,path,obj) => compose( pathOr(or,__,obj), split("."))(path))
+
 export const invariant = (msg,pred) => (...args) => {
     if( pred(...args) ){
         return true
@@ -33,4 +35,8 @@ export const enumInvariant = values => {
         v => `Admitted values ${values}. Received ${v}`,
         includes(__,values)
     )
+}
+
+export function toggleFullScreen() {
+    window.scrollTo(0,1);
 }

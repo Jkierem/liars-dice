@@ -1,8 +1,8 @@
 import { createReducer, nullaryActionCreator, unaryActionCreator } from "redux-utility";
 import { mergeRight } from "ramda";
 
-export const REQUEST_ROOMS = "dice/refresh-rooms";
-export const SET_ROOMS = "dice/set-rooms";
+export const REQUEST_ROOMS = "jub/refresh-rooms";
+export const SET_ROOMS = "jub/set-rooms";
 
 export default createReducer({
     [REQUEST_ROOMS]: (state) => {

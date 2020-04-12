@@ -4,9 +4,20 @@ import { getDevtoolsCompose } from 'redux-utility'
 import { rootReducer } from './reducer'
 import { rootEpic } from './epic'
 
+const testRooms = [0,1,2,3,4,5,6].map(
+  val => ({
+    name: `test`,
+    playerCount: val*2,
+    capacity: 12,
+  })
+)
+
 const initialState = {
     player:{},
-    rooms:[]
+    rooms: testRooms,
+    routing: {
+        view: "splash"
+    }
 }
 
 export const initStore = () => {

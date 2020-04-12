@@ -8,8 +8,19 @@ import {
 import { 
     __, lte, always, gt, sortWith, ascend, 
     prop, divide, converge, identity,
-    cond, allPass, intersperse
+    cond, allPass, compose, flatten, map, addIndex, dropLast
 } from 'ramda';
+
+const useStyle = makeStyles({
+  roomsContainer: {
+      overflowY: "scroll",
+      marginBottom: "16px"
+  },
+  roomItem: {
+    marginTop: "8px",
+    marginBottom: "8px"
+  }
+})
 
 const between = (min,max) => val => allPass([ lte(min), gt(max) ])(val)
 const getColor = (count,capacity) => {
@@ -22,8 +33,9 @@ const getColor = (count,capacity) => {
 }
 
 const RoomLine = (props) => {
-  const { name, capacity, playerCount, onClick } = props;
-  return <ListItem>
+  const { roomItem } = useStyle()
+  const { id, name, capacity, playerCount, onClick } = props;
+  return <ListItem key={id} className={roomItem}>
     <ListItemIcon>
       <div style={{ 
         userSelect: "none",
@@ -52,18 +64,17 @@ const NoRooms = () => {
     </ListItem>
 }
 
-const useStyle = makeStyles({
-    roomsContainer: {
-        height: "60%",
-        overflowY: "scroll",
-    },
-})
-
 const props = (...atts) => obj => atts.map(prop(__,obj));
 const sortRooms = sortWith([
     ascend(prop("name")),
     ascend(x => converge(divide,props("playerCount","capacity")(x)))
 ])
+const mapIndexed = addIndex(map);
+const joinRooms = compose(
+  dropLast(1),
+  flatten,
+  mapIndexed((c,index) => [c, <Divider key={`divider-${index}`} />])
+)
 
 const RoomList = (props) => {
     const css = useStyle()
@@ -74,10 +85,10 @@ const RoomList = (props) => {
     } 
     return <Container className={css.roomsContainer}>
         <List>
-            {rooms.length ? intersperse(<Divider /> ,sortRooms(rooms).map((info,index) => {
+            {rooms.length ? joinRooms(sortRooms(rooms).map((info,index) => {
                 return <RoomLine 
-                    key={index}
                     {...info}
+                    key={index}
                     onClick={handleRoomSelect(info)}
                 />
             })) : <NoRooms />}
