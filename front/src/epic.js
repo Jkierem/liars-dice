@@ -1,6 +1,10 @@
 import { combineEpics } from "redux-observable";
-import { nameEpic } from "./redux/player/epics";
+import { nameEpic, validateEpic, dismissEpic } from "./redux/player/epics";
+import { toSplashEpic } from './redux/routing/epics';
 
 export const rootEpic = combineEpics(
-    nameEpic
+    nameEpic,
+    validateEpic,
+    dismissEpic,
+    toSplashEpic
 )

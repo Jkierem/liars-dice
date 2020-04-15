@@ -44,7 +44,17 @@ const Connect = (onRelease) => {
             return this
         },
         changeName(name){
-            return this.emit("changeName",name)
+            return new Promise((resolve,reject) => {
+                this.emit("changeName",name,s => {
+                    s? resolve(): 
+                    reject("Name taken")
+                })
+            })
+        },
+        resetName(){
+            this.emit("resetName")
+            this.release();
+            return this
         },
         release: onRelease,
     }

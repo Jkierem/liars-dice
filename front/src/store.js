@@ -13,7 +13,13 @@ const testRooms = [0,1,2,3,4,5,6].map(
 )
 
 const initialState = {
-    player:{},
+    player: {
+        nameValidation: {
+            loading: false,
+            invalid: false,
+            message: ""
+        }
+    },
     rooms: testRooms,
     routing: {
         view: "splash"

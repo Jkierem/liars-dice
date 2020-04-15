@@ -1,8 +1,11 @@
-const { assoc, assocPath, dissoc, mergeDeepRight } = require("ramda");
+const { assoc, assocPath, dissoc, propEq, values, any } = require("ramda");
 
-const Player = (id) => ({
+const defaultName = id => "anon" + id.replace("/game","")
+
+const Player = (id,socket) => ({
     id,
-    name: "anon" + id.replace("/game",""),
+    socket,
+    name: defaultName(id),
     room: null
 })
 
@@ -12,16 +15,28 @@ const PlayerHandler = (debug=false) => {
     return {
         register(socket){
             const { id } = socket
-            this.push(id);
+            this.push(id,socket);
             socket.on("disconnect", () => this.remove(id))
-            socket.on("changeName", (name) => this.changeName(id,name))
+            socket.on("changeName", (name,ack) => ack(this.changeName(id,name)))
+            socket.on("resetName", () => this.changeName(id,defaultName(id)))
         },
-        push(id){
-            players = assoc(id,Player(id),players);
+        nameTaken(name){
+            return any(propEq("name",name),values(players))
+        },
+        getPlayer(id){
+            return players.find(propEq("id",id));
+        },
+        push(id,socket){
+            players = assoc(id,Player(id,socket),players);
             this.log()
         },
         changeName(id,name){
-            players = assocPath([id,"name"],name,players);
+            if( !this.nameTaken(name) ){
+                players = assocPath([id,"name"],name,players);
+                return true;
+            } else {
+                return false;
+            }
             this.log()
         },
         remove(id){
