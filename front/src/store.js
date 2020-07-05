@@ -20,7 +20,7 @@ const initialState = {
             message: ""
         }
     },
-    rooms: testRooms,
+    rooms: [],
     routing: {
         view: "splash"
     }

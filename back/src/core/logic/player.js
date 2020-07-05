@@ -37,11 +37,9 @@ const PlayerHandler = (debug=false) => {
             } else {
                 return false;
             }
-            this.log()
         },
         remove(id){
             players = dissoc(id,players)
-            this.log()
         },
         log(){
             if(debug){

@@ -12,7 +12,7 @@ const getEnvVariable = (str,raw=false) => {
 
 const server = getEnvVariable("BACK_URL")
 
-const Connect = (onRelease) => {
+const Connect = () => {
     const socket = io(server)
     return {
         on(event,funk){
@@ -39,9 +39,11 @@ const Connect = (onRelease) => {
             socket.emit("join",name,roomId,password,call)
             return this
         },
-        info(id,call){
-            socket.emit("info",id,call)
-            return this
+        register(game){
+            game.register(socket)
+            return () => {
+                game.unregister(socket)
+            }
         },
         changeName(name){
             return new Promise((resolve,reject) => {
@@ -53,28 +55,16 @@ const Connect = (onRelease) => {
         },
         resetName(){
             this.emit("resetName")
-            this.release();
             return this
-        },
-        release: onRelease,
+        }
     }
 }
 
 const Singleton = (() => {
     let connection = null;
-    let users = 0;
-    const onRelease = () => {
-        users--;
-        if( users === 0 ){
-            connection.off();
-            connection.disconnect();
-            connection = null;
-        }
-    }
     const socketHandler = () => {
-        users++;
         if( connection === null ){
-            connection = Connect(onRelease)
+            connection = Connect()
         }
         return connection;
     }

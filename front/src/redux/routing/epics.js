@@ -8,7 +8,7 @@ export const toSplashEpic = action$ => action$.pipe(
         return x.type === CHANGE_VIEW && x.payload === "splash"
     }),
     map(x => {
-        Connect().resetName().release()
+        Connect().resetName()
         return updatePlayer({ name: "" })
     })
 )

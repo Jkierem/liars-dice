@@ -58,7 +58,8 @@ const CreateRoom = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         // Change this!!!
-        console.log(formData);
+        
+        //dispatch(createRoom())
     }
 
     return <Card className={css.card}>
